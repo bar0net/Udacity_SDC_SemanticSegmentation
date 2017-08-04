@@ -2,6 +2,21 @@
 ### Introduction
 In this project, you'll label the pixels of a road in images using a Fully Convolutional Network (FCN).
 
+This project is part of Udacity's Self Driving Car Nanodegree Course. 
+
+### Checklist
+
+**Work in progress**
+
+1. [ ] Ensure you've passed all the unit tests.
+2. [ ]Ensure you pass all points on [the rubric](https://review.udacity.com/#!/rubrics/989/view).
+3. [ ]Submit the following in a zip file.
+ - `helper.py`
+ - `main.py`
+ - `project_tests.py`
+ - Newest inference images from `runs` folder
+ 
+ 
 ### Setup
 ##### Frameworks and Packages
 Make sure you have the following is installed:
@@ -22,11 +37,3 @@ Run the following command to run the project:
 python main.py
 ```
 
-### Submission
-1. Ensure you've passed all the unit tests.
-2. Ensure you pass all points on [the rubric](https://review.udacity.com/#!/rubrics/989/view).
-3. Submit the following in a zip file.
- - `helper.py`
- - `main.py`
- - `project_tests.py`
- - Newest inference images from `runs` folder

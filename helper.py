@@ -68,8 +68,8 @@ def Augment(image, gt_image):
     # translate
     x = random.randint(-10,10)
     y = random.randint(-10,10)
-    img_tr = sci_img.interpolation.shift(img_rot, (x,y))
-    gt_tr = sci_img.interpolation.shift(gt_rot, (x,y))
+    img_tr = sci_img.interpolation.shift(img_rot, (x,y,0))
+    gt_tr = sci_img.interpolation.shift(gt_rot, (x,y,0))
     
     # 50% chance flipping the image
     if random.choice((True,False)):

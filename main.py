@@ -6,7 +6,7 @@ from distutils.version import LooseVersion
 import project_tests as tests
 import time
 
-alpha = 0.0001
+alpha = 0.00002
 
 # Check TensorFlow Version
 assert LooseVersion(tf.__version__) >= LooseVersion('1.0'), 'Please use TensorFlow version 1.0 or newer.  You are using {}'.format(tf.__version__)
@@ -111,13 +111,15 @@ def optimize(nn_last_layer, correct_label, learning_rate, num_classes):
     logits = tf.reshape(nn_last_layer, (-1, num_classes))
     labels = tf.reshape(correct_label, (-1, num_classes))
     
-    print(logits.shape)
-    print(labels.shape)
+    #print(logits.shape)
+    #print(labels.shape)
     
-    entropy = tf.nn.softmax_cross_entropy_with_logits(logits = logits, labels = labels)
-    loss = tf.reduce_mean(entropy)
+    #entropy = tf.nn.softmax_cross_entropy_with_logits(logits = logits, labels = labels)
     
-    train_op = tf.train.AdamOptimizer(learning_rate).minimize(loss)
+    iou, iou_op = tf.metrics.mean_iou(labels=labels, predictions=logits, num_classes=num_classes)
+    # loss = tf.reduce_mean(iou)
+    train_op = tf.train.AdamOptimizer(learning_rate).minimize(iou)
+    
     
     return logits, train_op, loss
 tests.test_optimize(optimize)
@@ -157,7 +159,7 @@ def train_nn(sess, epochs, batch_size, get_batches_fn, train_op, cross_entropy_l
             
             
             num_batch += 1
-            print("Epoch: {}/{}, Batch: {}, Elapsed Time: {}".format(epoch, epochs, num_batch, time.clock() - t1))
+            print("Epoch: {}/{}, Batch: {}, Loss {}, Elapsed Time: {}".format(epoch, epochs, num_batch, loss, time.clock() - t1, sess.))
 tests.test_train_nn(train_nn)
 
 
@@ -176,7 +178,7 @@ def run():
     #  https://www.cityscapes-dataset.com/
     
     # Jordi: Define model parameters
-    epochs = 20
+    epochs = 50
     batch_size = 10
     
     with tf.Session() as sess:
@@ -196,14 +198,13 @@ def run():
         label = tf.placeholder(dtype=tf.float32, shape=(None, None, None, num_classes))
         learning_rate = tf.placeholder(dtype=tf.float32)
         
-        logits, train_op, loss = optimize(net, label, learning_rate, num_classes)
         
+        logits, train_op, loss = optimize(net, label, learning_rate, num_classes)
         # TODO: Train NN using the train_nn function
         sess.run(tf.global_variables_initializer())
+        sess.run(tf.local_variables_initializer())
         
-        print(keep_prob)
-        print(learning_rate)
-        
+                
         train_nn(sess, epochs, batch_size, get_batches_fn, train_op, loss,
                  input_image, label, keep_prob, learning_rate)
 

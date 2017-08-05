@@ -138,10 +138,10 @@ def train_nn(sess, epochs, batch_size, get_batches_fn, train_op, cross_entropy_l
     :param keep_prob: TF Placeholder for dropout keep probability
     :param learning_rate: TF Placeholder for learning rate
     """
-    # TODO: Implement function
-    
+    # TODO: Implement function    
     t1 = time.clock()
     
+    print ("Start training")
     for epoch in range(epochs):   
         num_batch = 0;
         for image, gt_image in get_batches_fn(batch_size):
@@ -155,9 +155,9 @@ def train_nn(sess, epochs, batch_size, get_batches_fn, train_op, cross_entropy_l
             
             _, loss = sess.run([train_op, cross_entropy_loss], feed_dict = feed_dict)
             
+            
             num_batch += 1
             print("Epoch: {}/{}, Batch: {}, Elapsed Time: {}".format(epoch, epochs, num_batch, time.clock() - t1))
-
 tests.test_train_nn(train_nn)
 
 
@@ -176,9 +176,9 @@ def run():
     #  https://www.cityscapes-dataset.com/
     
     # Jordi: Define model parameters
-    epochs = 5
-    batch_size = 2
-
+    epochs = 20
+    batch_size = 10
+    
     with tf.Session() as sess:
         # Path to vgg model
         vgg_path = os.path.join(data_dir, 'vgg')

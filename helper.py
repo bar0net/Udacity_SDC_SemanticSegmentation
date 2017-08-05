@@ -66,8 +66,8 @@ def Augment(image, gt_image):
     gt_rot = sci_img.interpolation.rotate(image, angle)
     
     # translate
-    x = random.randrange(-10,10)
-    y = random.randrange(-10,10)
+    x = random.randint(-10,10)
+    y = random.randint(-10,10)
     img_tr = sci_img.interpolation.shift(img_rot, (x,y))
     gt_tr = sci_img.interpolation.shift(gt_rot, (x,y))
     

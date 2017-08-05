@@ -61,21 +61,21 @@ def maybe_download_pretrained_vgg(data_dir):
 # TODO: Perform some data augmentation
 def Augment(image, gt_image):
     # rotate
-    angle = random.randrange(-15.0,15.0)
-    img_rot = sci_img.interpolation.rotate(image, angle, reshape=False)
-    gt_rot = sci_img.interpolation.rotate(gt_image, angle, reshape=False)
+    angle = random.randrange(-5.0,5.0)
+    img = sci_img.interpolation.rotate(image, angle, reshape=False)
+    gt = sci_img.interpolation.rotate(gt_image, angle, reshape=False)
     
     # translate
     x = random.randint(-10,10)
     y = random.randint(-10,10)
-    img_tr = sci_img.interpolation.shift(img_rot, (x,y,0))
-    gt_tr = sci_img.interpolation.shift(gt_rot, (x,y,0))
+    img = sci_img.interpolation.shift(img, (x,y,0))
+    gt = sci_img.interpolation.shift(gt, (x,y,0))
     
     # 50% chance flipping the image
     if random.choice((True,False)):
-        return np.fliplr(img_tr), np.fliplr(gt_tr)
+        return np.fliplr(img), np.fliplr(gt)
     else:
-        return img_tr, gt_tr
+        return img, gt
 
 def gen_batch_function(data_folder, image_shape):
     """
@@ -113,7 +113,7 @@ def gen_batch_function(data_folder, image_shape):
                 images.append(image)
                 gt_images.append(gt_image)
                 
-                for _ in range(5):
+                for _ in range(2):
                     img_aug, gt_aug = Augment(image, gt_image)
                     
                     images.append(img_aug)

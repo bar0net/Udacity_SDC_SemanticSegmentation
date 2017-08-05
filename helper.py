@@ -92,10 +92,10 @@ def gen_batch_function(data_folder, image_shape):
         """
         image_paths = glob(os.path.join(data_folder, 'image_2', '*.png'))
         image_paths2 = glob(os.path.join(data_folder, 'image_2', '*.png'))
-        image_paths3 = glob(os.path.join(data_folder, 'image_2', '*.png'))
-        image_paths4 = glob(os.path.join(data_folder, 'image_2', '*.png'))
+        #image_paths3 = glob(os.path.join(data_folder, 'image_2', '*.png'))
+        #image_paths4 = glob(os.path.join(data_folder, 'image_2', '*.png'))
         
-        batch_size = int(batch_size_ / 4)
+        batch_size = int(batch_size_ / 2)
         
         label_paths = {
             re.sub(r'_(lane|road)_', '_', os.path.basename(path)): path
@@ -104,8 +104,8 @@ def gen_batch_function(data_folder, image_shape):
 
         random.shuffle(image_paths)
         random.shuffle(image_paths2)
-        random.shuffle(image_paths3)
-        random.shuffle(image_paths4)
+        #random.shuffle(image_paths3)
+        #random.shuffle(image_paths4)
         for batch_i in range(0, len(image_paths), batch_size):
             images = []
             gt_images = []
@@ -135,7 +135,7 @@ def gen_batch_function(data_folder, image_shape):
 
                 images.append(np.fliplr(image))
                 gt_images.append(np.fliplr(gt_image))
-                
+            '''    
             # Rotate +5º
             for image_file in image_paths3[batch_i:batch_i+batch_size]:
                 gt_image_file = label_paths[os.path.basename(image_file)]
@@ -169,6 +169,7 @@ def gen_batch_function(data_folder, image_shape):
 
                 images.append(np.fliplr(image))
                 gt_images.append(np.fliplr(gt_image))
+            '''
  
             yield np.array(images), np.array(gt_images)
     return get_batches_fn

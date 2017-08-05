@@ -84,19 +84,28 @@ def gen_batch_function(data_folder, image_shape):
     :param image_shape: Tuple - Shape of image
     :return:
     """
-    def get_batches_fn(batch_size):
+    def get_batches_fn(batch_size_):
         """
         Create batches of training data
         :param batch_size: Batch Size
         :return: Batches of training data
         """
         image_paths = glob(os.path.join(data_folder, 'image_2', '*.png'))
+        image_paths2 = glob(os.path.join(data_folder, 'image_2', '*.png'))
+        image_paths3 = glob(os.path.join(data_folder, 'image_2', '*.png'))
+        image_paths4 = glob(os.path.join(data_folder, 'image_2', '*.png'))
+        
+        batch_size = int(batch_size_ / 4)
+        
         label_paths = {
             re.sub(r'_(lane|road)_', '_', os.path.basename(path)): path
             for path in glob(os.path.join(data_folder, 'gt_image_2', '*_road_*.png'))}
         background_color = np.array([255, 0, 0])
 
         random.shuffle(image_paths)
+        random.shuffle(image_paths2)
+        random.shuffle(image_paths3)
+        random.shuffle(image_paths4)
         for batch_i in range(0, len(image_paths), batch_size):
             images = []
             gt_images = []
@@ -113,11 +122,53 @@ def gen_batch_function(data_folder, image_shape):
                 images.append(image)
                 gt_images.append(gt_image)
                 
-                for _ in range(2):
-                    img_aug, gt_aug = Augment(image, gt_image)
-                    
-                    images.append(img_aug)
-                    gt_images.append(gt_aug) 
+            # Flipped images
+            for image_file in image_paths2[batch_i:batch_i+batch_size]:
+                gt_image_file = label_paths[os.path.basename(image_file)]
+
+                image = scipy.misc.imresize(scipy.misc.imread(image_file), image_shape)
+                gt_image = scipy.misc.imresize(scipy.misc.imread(gt_image_file), image_shape)
+
+                gt_bg = np.all(gt_image == background_color, axis=2)
+                gt_bg = gt_bg.reshape(*gt_bg.shape, 1)
+                gt_image = np.concatenate((gt_bg, np.invert(gt_bg)), axis=2)
+
+                images.append(np.fliplr(image))
+                gt_images.append(np.fliplr(gt_image))
+                
+            # Rotate +5º
+            for image_file in image_paths3[batch_i:batch_i+batch_size]:
+                gt_image_file = label_paths[os.path.basename(image_file)]
+
+                image = scipy.misc.imresize(scipy.misc.imread(image_file), image_shape)
+                gt_image = scipy.misc.imresize(scipy.misc.imread(gt_image_file), image_shape)
+
+                gt_bg = np.all(gt_image == background_color, axis=2)
+                gt_bg = gt_bg.reshape(*gt_bg.shape, 1)
+                gt_image = np.concatenate((gt_bg, np.invert(gt_bg)), axis=2)
+                
+                image = sci_img.interpolation.rotate(image, 5, reshape=False)
+                gt_image = sci_img.interpolation.rotate(gt_image, 5, reshape=False)
+
+                images.append(np.fliplr(image))
+                gt_images.append(np.fliplr(gt_image))
+                
+            # Rotate -5º
+            for image_file in image_paths4[batch_i:batch_i+batch_size]:
+                gt_image_file = label_paths[os.path.basename(image_file)]
+
+                image = scipy.misc.imresize(scipy.misc.imread(image_file), image_shape)
+                gt_image = scipy.misc.imresize(scipy.misc.imread(gt_image_file), image_shape)
+
+                gt_bg = np.all(gt_image == background_color, axis=2)
+                gt_bg = gt_bg.reshape(*gt_bg.shape, 1)
+                gt_image = np.concatenate((gt_bg, np.invert(gt_bg)), axis=2)
+                
+                image = sci_img.interpolation.rotate(image, -5, reshape=False)
+                gt_image = sci_img.interpolation.rotate(gt_image, -5, reshape=False)
+
+                images.append(np.fliplr(image))
+                gt_images.append(np.fliplr(gt_image))
  
             yield np.array(images), np.array(gt_images)
     return get_batches_fn

@@ -115,8 +115,12 @@ def gen_batch_function(data_folder, image_shape):
                 
                 for _ in range(5):
                     img_aug, gt_aug = Augment(image, gt_image)
+                    
+                    img_aug = scipy.misc.imresize(img_aug, image_shape)
+                    gt_aug = scipy.misc.imresize(gt_aug, image_shape)
+                    
                     images.append(img_aug)
-                    gt_images.append(gt_image) 
+                    gt_images.append(gt_aug) 
  
             yield np.array(images), np.array(gt_images)
     return get_batches_fn

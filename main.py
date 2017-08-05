@@ -186,7 +186,7 @@ def run():
     
     # TODO: Parameter Models
     epochs = 40
-    batch_size = 4
+    batch_size = 16
     
     with tf.Session() as sess:
         # Path to vgg model

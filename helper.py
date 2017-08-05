@@ -56,7 +56,25 @@ def maybe_download_pretrained_vgg(data_dir):
 
         # Remove zip file to save space
         os.remove(os.path.join(vgg_path, vgg_filename))
-
+        
+# TODO: Perform some data augmentation
+def Augment(image, gt_image):
+    # rotate
+    angle = random.randrange(-15.0,15.0)
+    img_rot = scipy.ndimage.interpolation.rotate(image, angle)
+    gt_rot = scipy.ndimage.interpolation.rotate(image, angle)
+    
+    # translate
+    x = random.randrange(-10,10)
+    y = random.randrange(-10,10)
+    img_tr = scipy.ndimage.interpolation.shift(img_rot, (x,y))
+    gt_tr = scipy.ndimage.interpolation.shift(gt_rot, (x,y))
+    
+    # 50% chance flipping the image
+    if random.choice((True,False)):
+        return np.fliplr(img_tr), np.fliplr(gt_tr)
+    else:
+        return img_tr, gt_tr
 
 def gen_batch_function(data_folder, image_shape):
     """
@@ -101,25 +119,6 @@ def gen_batch_function(data_folder, image_shape):
  
             yield np.array(images), np.array(gt_images)
     return get_batches_fn
-
-
-    # TODO: Perform some data augmentation
-    def Augment(image, gt_image):
-        # rotate
-        angle = random.randrange(-15.0,15.0)
-        img_rot = scipy.ndimage.interpolation.rotate(image, angle)
-        gt_rot = scipy.ndimage.interpolation.rotate(image, angle)
-        
-        # translate
-        x = random.randrange(-10,10)
-        y = random.randrange(-10,10)
-        img_tr = scipy.ndimage.interpolation.shift(img_rot, (x,y))
-        gt_tr = scipy.ndimage.interpolation.shift(gt_rot, (x,y))
-        
-        if random.choice((True,False)):
-            return np.fliplr(img_tr), np.fliplr(gt_tr)
-        else:
-            return img_tr, gt_tr
 
 
 def gen_test_output(sess, logits, keep_prob, image_pl, data_folder, image_shape):

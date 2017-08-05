@@ -116,9 +116,16 @@ def optimize(nn_last_layer, correct_label, learning_rate, num_classes):
     
     #entropy = tf.nn.softmax_cross_entropy_with_logits(logits = logits, labels = labels)
     
-    iou, iou_op = tf.metrics.mean_iou(labels=labels, predictions=logits, num_classes=num_classes)
+    # loss, iou_op = tf.metrics.mean_iou(labels=labels, predictions=logits, num_classes=num_classes)
+    
+    # Using IoU implementation from:
+    # http://angusg.com/writing/2016/12/28/optimizing-iou-semantic-segmentation.html
+    inter = tf.reduce_sum(tf.multiply(logits,labels))
+    union=tf.reduce_sum(tf.subtract(tf.add(logits,labels),tf.multiply(logits,labels)))
+    loss=tf.subtract(tf.constant(1.0, dtype=tf.float32),tf.div(inter,union))
+    
     # loss = tf.reduce_mean(iou)
-    train_op = tf.train.AdamOptimizer(learning_rate).minimize(iou)
+    train_op = tf.train.AdamOptimizer(learning_rate).minimize(loss)
     
     
     return logits, train_op, loss
@@ -159,7 +166,7 @@ def train_nn(sess, epochs, batch_size, get_batches_fn, train_op, cross_entropy_l
             
             
             num_batch += 1
-            print("Epoch: {}/{}, Batch: {}, Loss {}, Elapsed Time: {}".format(epoch, epochs, num_batch, loss, time.clock() - t1, sess.))
+            print("Epoch: {}/{}, Batch: {}, Loss {}, Elapsed Time: {}".format(epoch, epochs, num_batch, loss, time.clock() - t1))
 tests.test_train_nn(train_nn)
 
 

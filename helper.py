@@ -11,6 +11,7 @@ from glob import glob
 from urllib.request import urlretrieve
 from tqdm import tqdm
 
+import scipy.ndimage as sci_img
 
 class DLProgress(tqdm):
     last_block = 0
@@ -61,14 +62,14 @@ def maybe_download_pretrained_vgg(data_dir):
 def Augment(image, gt_image):
     # rotate
     angle = random.randrange(-15.0,15.0)
-    img_rot = scipy.ndimage.interpolation.rotate(image, angle)
-    gt_rot = scipy.ndimage.interpolation.rotate(image, angle)
+    img_rot = sci_img.interpolation.rotate(image, angle)
+    gt_rot = sci_img.interpolation.rotate(image, angle)
     
     # translate
     x = random.randrange(-10,10)
     y = random.randrange(-10,10)
-    img_tr = scipy.ndimage.interpolation.shift(img_rot, (x,y))
-    gt_tr = scipy.ndimage.interpolation.shift(gt_rot, (x,y))
+    img_tr = sci_img.interpolation.shift(img_rot, (x,y))
+    gt_tr = sci_img.interpolation.shift(gt_rot, (x,y))
     
     # 50% chance flipping the image
     if random.choice((True,False)):

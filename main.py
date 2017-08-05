@@ -114,17 +114,17 @@ def optimize(nn_last_layer, correct_label, learning_rate, num_classes):
     #print(logits.shape)
     #print(labels.shape)
     
-    #entropy = tf.nn.softmax_cross_entropy_with_logits(logits = logits, labels = labels)
+    entropy = tf.nn.softmax_cross_entropy_with_logits(logits = logits, labels = labels)
+    loss = tf.reduce_mean(entropy)
     
     # loss, iou_op = tf.metrics.mean_iou(labels=labels, predictions=logits, num_classes=num_classes)
     
     # Using IoU implementation from:
     # http://angusg.com/writing/2016/12/28/optimizing-iou-semantic-segmentation.html
-    inter = tf.reduce_sum(tf.multiply(logits,labels))
-    union=tf.reduce_sum(tf.subtract(tf.add(logits,labels),tf.multiply(logits,labels)))
-    loss=tf.subtract(tf.constant(1.0, dtype=tf.float32),tf.div(inter,union))
+    #inter = tf.reduce_sum(tf.multiply(logits,labels))
+    #union=tf.reduce_sum(tf.subtract(tf.add(logits,labels),tf.multiply(logits,labels)))
+    #loss=tf.subtract(tf.constant(1.0, dtype=tf.float32),tf.div(inter,union))
     
-    # loss = tf.reduce_mean(iou)
     train_op = tf.train.AdamOptimizer(learning_rate).minimize(loss)
     
     

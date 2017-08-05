@@ -184,9 +184,9 @@ def run():
     # You'll need a GPU with at least 10 teraFLOPS to train on.
     #  https://www.cityscapes-dataset.com/
     
-    # Jordi: Define model parameters
-    epochs = 50
-    batch_size = 10
+    # TODO: Parameter Models
+    epochs = 40
+    batch_size = 2
     
     with tf.Session() as sess:
         # Path to vgg model
@@ -194,7 +194,7 @@ def run():
         # Create function to get batches
         get_batches_fn = helper.gen_batch_function(os.path.join(data_dir, 'data_road/training'), image_shape)
 
-        # OPTIONAL: Augment Images for better results
+        # OPTIONAL: Augment Images for better results --> Added Data Augmentation inside the helper function
         #  https://datascience.stackexchange.com/questions/5224/how-to-prepare-augment-images-for-neural-network
 
         # TODO: Build NN using load_vgg, layers, and optimize function
@@ -219,6 +219,7 @@ def run():
         #  helper.save_inference_samples(runs_dir, data_dir, sess, image_shape, logits, keep_prob, input_image)
         helper.save_inference_samples(runs_dir, data_dir, sess, image_shape, logits,
                                       keep_prob, input_image)
+        
         # OPTIONAL: Apply the trained model to a video
         
 

@@ -93,9 +93,33 @@ def gen_batch_function(data_folder, image_shape):
 
                 images.append(image)
                 gt_images.append(gt_image)
-
+                
+                for _ in range(5):
+                    img_aug, gt_aug = Augment(image, gt_image)
+                    images.append(img_aug)
+                    gt_images.append(gt_image) 
+ 
             yield np.array(images), np.array(gt_images)
     return get_batches_fn
+
+
+    # TODO: Perform some data augmentation
+    def Augment(image, gt_image):
+        # rotate
+        angle = random.randrange(-15.0,15.0)
+        img_rot = scipy.ndimage.interpolation.rotate(image, angle)
+        gt_rot = scipy.ndimage.interpolation.rotate(image, angle)
+        
+        # translate
+        x = random.randrange(-10,10)
+        y = random.randrange(-10,10)
+        img_tr = scipy.ndimage.interpolation.shift(img_rot, (x,y))
+        gt_tr = scipy.ndimage.interpolation.shift(gt_rot, (x,y))
+        
+        if random.choice((True,False)):
+            return np.fliplr(img_tr), np.fliplr(gt_tr)
+        else:
+            return img_tr, gt_tr
 
 
 def gen_test_output(sess, logits, keep_prob, image_pl, data_folder, image_shape):

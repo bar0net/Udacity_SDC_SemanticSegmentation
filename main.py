@@ -6,7 +6,7 @@ from distutils.version import LooseVersion
 import project_tests as tests
 import time
 
-alpha = 0.000001
+alpha = 0.000005
 
 # Check TensorFlow Version
 assert LooseVersion(tf.__version__) >= LooseVersion('1.0'), 'Please use TensorFlow version 1.0 or newer.  You are using {}'.format(tf.__version__)
@@ -185,8 +185,8 @@ def run():
     #  https://www.cityscapes-dataset.com/
     
     # TODO: Parameter Models
-    epochs = 40
-    batch_size = 8
+    epochs = 50
+    batch_size = 16
     
     with tf.Session() as sess:
         # Path to vgg model

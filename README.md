@@ -1,22 +1,18 @@
 # Semantic Segmentation
 ### Introduction
-In this project, you'll label the pixels of a road in images using a Fully Convolutional Network (FCN).
+The objective of this project is to build a Fully Connected Convolutional Neural Net to identify the road in a collection of pictures. The encoding of the FCN will be provided by a pre-trained VGG16 model and the decoder will be built using 1x1 convolutions, upscaling and layer skipping.
 
 This project is part of Udacity's Self Driving Car Nanodegree Course. 
 
 ### Checklist
-
-**Work in progress**
-
-1. [ ] Ensure you've passed all the unit tests.
-2. [ ]Ensure you pass all points on [the rubric](https://review.udacity.com/#!/rubrics/989/view).
-3. [ ]Submit the following in a zip file.
- - `helper.py`
- - `main.py`
- - `project_tests.py`
- - Newest inference images from `runs` folder
+1. Ensure you've passed all the unit tests. [X]
+2. Ensure you pass all points on [the rubric](https://review.udacity.com/#!/rubrics/989/view). [X]
  
+![Example1](/runs/1501984689.0793726/um_000032.png)
+
+![Example2](/runs/1501984689.0793726/um_000090.png)
  
+
 ### Setup
 ##### Frameworks and Packages
 Make sure you have the following is installed:
